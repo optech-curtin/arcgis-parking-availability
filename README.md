@@ -53,6 +53,3 @@ A modern, production-ready parking availability dashboard built with Next.js 15,
 ## Security & Best Practices
 - **No secrets are committed.** All sensitive config is loaded from `.env` and ignored by git.
 - **Production ready.** Linting, type-checking, and build scripts included.
-
-## License
-MIT (or your organization's preferred license)
