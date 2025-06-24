@@ -19,6 +19,7 @@ export default function HomePage() {
   }), []);
 
   const arcgisConfig: ArcGISConfig = useMemo(() => ({
+    portalUrl: process.env.NEXT_PUBLIC_ARCGIS_PORTAL_URL || "",
     webMapId: process.env.NEXT_PUBLIC_ARCGIS_WEBMAP_ID || "",
     bayLayerUrl: process.env.NEXT_PUBLIC_ARCGIS_BAY_LAYER_URL || "",
     underBayLayerUrl: process.env.NEXT_PUBLIC_ARCGIS_UNDER_BAY_LAYER_URL || "",

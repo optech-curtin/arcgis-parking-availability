@@ -182,21 +182,13 @@ export default function MapView({
         // Create portal instance - try to use the same portal as authentication
         let portal;
         try {
-          // Try to use the Curtin portal first (based on the WebMap ID and previous errors)
+          // Try to use the same portal as configured in environment
           portal = new Portal({
-            url: "https://arcgis.curtin.edu.au/portal"
+            url: config.portalUrl || "https://www.arcgis.com"
           });
           await portal.load();
         } catch {
-          try {
-            // Fallback to ArcGIS Online
-            portal = new Portal({
-              url: "https://www.arcgis.com"
-            });
-            await portal.load();
-          } catch {
-            // Portal loading failed, continue without explicit portal
-          }
+          // Portal loading failed, continue without explicit portal
         }
 
         // Create WebMap using the configured WebMap ID
@@ -659,7 +651,7 @@ export default function MapView({
           initializationPromiseRef.current = null;
         }
       };
-    }, [config.webMapId, config.parkingLayerUrl, config.bayLayerUrl, config.underBayLayerUrl, center, initialZoom]);
+    }, [config.webMapId, config.parkingLayerUrl, config.bayLayerUrl, config.underBayLayerUrl, config.portalUrl, center, initialZoom]);
 
   if (error) {
     return (

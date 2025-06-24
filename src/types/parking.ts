@@ -26,6 +26,7 @@ export interface MapViewProps {
 }
 
 export interface ArcGISConfig {
+  portalUrl: string;
   webMapId: string;
   bayLayerUrl: string;
   underBayLayerUrl: string;

@@ -12,7 +12,8 @@ export function useAuth(config: AuthConfig): AuthState & {
 
   const initializeAuth = useCallback(async () => {
     if (!config.portalUrl || !config.appId) {
-      console.error("Missing portal URL or app ID");
+      // Log error without exposing sensitive data
+      console.warn("Missing required authentication configuration");
       setAuthState(prev => ({ ...prev, loading: false }));
       return;
     }
@@ -65,7 +66,8 @@ export function useAuth(config: AuthConfig): AuthState & {
         });
       }
     } catch {
-      console.error("Auth initialization error");
+      // Log error without exposing sensitive data
+      console.warn("Authentication initialization failed");
       setAuthState({
         isAuthenticated: false,
         userInfo: null,
