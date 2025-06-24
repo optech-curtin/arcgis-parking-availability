@@ -67,12 +67,7 @@ jobs:
           cat .env.production | sed 's/=.*/=***/'
 
       - name: Build with Next.js
-        run: |
-          echo "Building with environment variables..."
-          npm run build
-          # Copy static assets to the correct location
-          mkdir -p out/_next/static
-          cp -r .next/static/* out/_next/static/
+        run: npm run build
         env:
           PAGES_BASE_PATH: ${{ steps.setup_pages.outputs.base_path }}
           NEXT_PUBLIC_ARCGIS_PORTAL_URL: ${{ secrets.NEXT_PUBLIC_ARCGIS_PORTAL_URL }}
