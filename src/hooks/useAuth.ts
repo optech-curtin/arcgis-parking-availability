@@ -11,8 +11,12 @@ export function useAuth(config: AuthConfig): AuthState & {
   });
 
   const initializeAuth = useCallback(async () => {
+    console.log('Initializing auth with config:', { 
+      portalUrl: config.portalUrl ? 'set' : 'missing',
+      appId: config.appId ? 'set' : 'missing'
+    });
+
     if (!config.portalUrl || !config.appId) {
-      // Log error without exposing sensitive data
       console.warn("Missing required authentication configuration");
       setAuthState(prev => ({ ...prev, loading: false }));
       return;
@@ -26,6 +30,8 @@ export function useAuth(config: AuthConfig): AuthState & {
         import("@arcgis/core/portal/Portal")
       ]);
 
+      console.log('ArcGIS modules loaded successfully');
+
       // Register OAuth info
       const oauthInfo = new OAuthInfo({
         appId: config.appId,
@@ -34,8 +40,11 @@ export function useAuth(config: AuthConfig): AuthState & {
       });
       IdentityManager.registerOAuthInfos([oauthInfo]);
 
+      console.log('OAuth info registered');
+
       // Check existing credentials
       try {
+        console.log('Checking sign-in status...');
         await IdentityManager.checkSignInStatus(`${config.portalUrl}/sharing`);
         
         const portal = new Portal({
@@ -45,6 +54,7 @@ export function useAuth(config: AuthConfig): AuthState & {
         await portal.load();
 
         if (portal.user) {
+          console.log('User already signed in:', portal.user.username);
           const userInfo: UserInfo = {
             fullName: portal.user.fullName ?? "Unknown User",
             username: portal.user.username ?? "unknown"
@@ -55,19 +65,31 @@ export function useAuth(config: AuthConfig): AuthState & {
             userInfo,
             loading: false
           });
+          return;
         }
       } catch {
-        // Not signed in yet - automatically trigger sign in
+        console.log('No existing credentials found, triggering sign-in...');
+      }
+
+      // Not signed in yet - automatically trigger sign in
+      try {
+        console.log('Triggering authentication dialog...');
         IdentityManager.getCredential(`${config.portalUrl}/sharing`);
         setAuthState({
           isAuthenticated: false,
           userInfo: null,
           loading: false
         });
+      } catch (error) {
+        console.error('Failed to trigger authentication:', error);
+        setAuthState({
+          isAuthenticated: false,
+          userInfo: null,
+          loading: false
+        });
       }
-    } catch {
-      // Log error without exposing sensitive data
-      console.warn("Authentication initialization failed");
+    } catch (error) {
+      console.error("Authentication initialization failed:", error);
       setAuthState({
         isAuthenticated: false,
         userInfo: null,
@@ -81,14 +103,18 @@ export function useAuth(config: AuthConfig): AuthState & {
   }, [initializeAuth]);
 
   async function signOut() {
-    const { default: IdentityManager } = await import("@arcgis/core/identity/IdentityManager");
-    IdentityManager.destroyCredentials();
-    
-    setAuthState({
-      isAuthenticated: false,
-      userInfo: null,
-      loading: false
-    });
+    try {
+      const { default: IdentityManager } = await import("@arcgis/core/identity/IdentityManager");
+      IdentityManager.destroyCredentials();
+      
+      setAuthState({
+        isAuthenticated: false,
+        userInfo: null,
+        loading: false
+      });
+    } catch (error) {
+      console.error('Sign out failed:', error);
+    }
   }
 
   return {

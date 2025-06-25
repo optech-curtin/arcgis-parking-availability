@@ -23,25 +23,13 @@ export function calculateParkingStatistics(parkingLots: ParkingLot[]): ParkingSt
   };
 }
 
-export function getStatusColor(status: ParkingStatus): string {
-  switch (status) {
-    case 'plenty':
-      return '#10B981'; // Green
-    case 'limited':
-      return '#F59E0B'; // Amber
-    case 'almost-full':
-      return '#EF4444'; // Red
-    case 'closed':
-      return '#6B7280'; // Gray
-    default:
-      return '#6B7280';
-  }
-}
-
 export function getStatusFromPercentage(percentage: number): ParkingStatus {
   if (percentage >= 50) return 'plenty';
   if (percentage >= 20) return 'limited';
   return 'almost-full';
 }
+
+// Re-export the color function from map-utils for consistency
+export { getVacancyColor as getStatusColor } from './map-utils';
 
  

@@ -51,7 +51,6 @@ jobs:
           echo "WEBMAP_BAYS exists: ${{ secrets.NEXT_PUBLIC_ARCGIS_BAY_LAYER_URL != '' && 'yes' || 'no' }}"
           echo "WEBMAP_BAYS_UNDER exists: ${{ secrets.NEXT_PUBLIC_ARCGIS_UNDER_BAY_LAYER_URL != '' && 'yes' || 'no' }}"
 
-
           # Create .env.production file
           echo "Creating .env.production file..."
           cat << EOF > .env.production
